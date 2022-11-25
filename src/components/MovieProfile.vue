@@ -1,134 +1,48 @@
 <template>
-  <h1>FreeMovies4U</h1>
-
-  <div class="movie-container">
-    <label id="select" for="Movies">Choose a Movie:</label>
-    <select v-model="movie">
-      <option value="361743">Top Gun: Maverick</option>
-      <option value="140607">Star Wars: The Force Awakens</option>
-      <option value="763285">Ambulance</option>
-      <option value="353081">Mission: Impossible - Fallout</option>
-      <option value="634649">Spider-Man: No Way Home</option>
-      <option value="505642">Black Panther: Wakanda Forever</option>
-      <option value="507086">Jurassic World Dominion</option>
-      <option value="384018">Fast & Furious Presents: Hobbs & Shaw</option>
-      <option value="338953">Fantastic Beasts: The Secrets of Dumbledore</option>
-      <option value="791373">Zack Snyder's Justice League</option>
-    </select>
-    <button id="getButton" @click=getSelectedOption()>Get</button>
+  <div>
+    <table>
+      <tr>
+        <td id="left">
+          <img :src="this.movie.poster">
+        </td>
+        <td id="right">
+          <div id="movieInfo">
+            <p id="Title">Title: {{this.movie.title}}</p>
+            <p id="originalTitle">Original title: {{this.movie.originalTitle}}</p>
+            <p id="genre" v-for="genre in this.movie.genres">Genre: {{ genre.name }}</p>
+            <p id="releaseDate">Release Date: {{this.movie.releaseDate}}</p>
+            <p id="Popularity">Popularity: {{this.movie.popularity}}</p>
+            <p id="Revenue">Revenue: {{this.movie.revenue}}</p>
+            <p id="voteAverage">Vote Average: {{this.movie.voteAverage}}</p>
+            <p id="VoteCount">Vote Count: {{this.movie.voteCount}}</p>
+            <p id="Runtime">Runtime: {{this.movie.runtime}}</p>
+          </div>
+          <p id="synopsisHeading">Overview:</p>
+          <p id="synopsisDescription">{{ this.movie.synopsisDescription }}</p>
+          <iframe id="movieTrailer" :src="this.movie.movieTrailer"></iframe>
+        </td>
+      </tr>
+    </table>
   </div>
-
-  <body>
-    <div>
-        <tr>
-          <td id="left">
-            <img :src="poster">
-          </td>
-          <td id="right">
-            <p id="Title"></p>
-            <p id="originalTitle"></p>
-            <p id="genre" v-for="genre in genres">Genre: {{ genre.name }}</p>
-            <p id="releaseDate"></p>
-            <p id="Popularity"></p>
-            <p id="Revenue"></p>
-            <p id="voteAverage"></p>
-            <p id="VoteCount"></p>
-            <p id="Runtime"></p>
-            <p id="synopsisHeading">Overview:</p>
-            <p id="synopsisDescription">{{ overviewText }}</p>
-            <iframe :src="movieTrailer"></iframe>
-          </td>
-        </tr>
-    </div>
-  </body>
 </template>
 
-<script setup>
-import axios from "axios";
-import { ref } from 'vue';
+<script>
 
-const movie = ref(361743);
-let poster = ref("");
-let title = ref("");
-let originalTitle = ref("");
-let genres = ref([]);
-let releaseDate = ref("");
-let popularity = ref("");
-let revenue = ref("");
-let voteAverage = ref("");
-let voteCount = ref("");
-let runtime = ref("");
-let synopsisDescription = ref("");
-let movieTrailer = ref("");
-
-function getSelectedOption() {
-  axios.get(`https://api.themoviedb.org/3/movie/${movie.value}`, {
-    params: {
-      api_key: "e5a15bfef5377c118448ec56598ced79",
-      append_to_response: "videos",
+export default {
+  name: "MovieProfile",
+  props: {
+    movie: {
+      type: Object,
+      required: true
     }
-  }).then((movieData) => {
-    poster.value = "https://image.tmdb.org/t/p/w500" + movieData.data.poster_path;
-    title.value = movieData.data.title;
-    originalTitle.value = movieData.data.original_title;
-    genres.value = movieData.data.genres;
-    releaseDate.value = movieData.data.release_date;
-    popularity.value = movieData.data.popularity;
-    revenue.value = formatPrice(movieData.data.revenue);
-    voteAverage.value = movieData.data.vote_average;
-    voteCount.value = movieData.data.vote_count;
-    runtime.value = movieData.data.runtime;
-    synopsisDescription.value = movieData.data.overview;
-    movieTrailer.value = "https://www.youtube.com/embed/" + (movieData.data.videos.results.filter((trailer) => trailer.type === "Trailer")).at(0).key;
-  });
+  }
 }
 </script>
 
 
 <style scoped>
-html {
-  background-color: rgb(223, 207, 190);
-  height: auto;
-  width: auto;
-}
-
-h1 {
-  text-align: center;
-  color: rgb(195, 68, 122);
-  text-transform: uppercase;
-  font-size: 45px;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-weight: bolder;
-}
-
-select {
-  color: rgb(195, 68, 122);
-  padding-left: 15px;
-  font-weight: bold;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  font-size: 27px;
-}
-
-button {
-  border-width: 3px;
-  color: black;
-  padding: 10px 10px;
-  background-color: rgb(195, 68, 122);
-  text-transform: uppercase;
-  display: inline-block;
-  font-size: 16px;
-  font-weight: bolder;
-  margin: 2px 2px;
-  cursor: pointer;
-}
-
-#Movies {
-  color: rgb(195, 68, 122);
-  background-color: rgba(54, 52, 52, 0.938);
-  border-color: rgba(71, 70, 70, 0.959);
-  font-weight: 900;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-size: 25px;
+#right {
+  float: left;
 }
 
 #movieInfo {
@@ -139,6 +53,10 @@ button {
   margin-left: 1%;
   left: 25px;
   text-align: left;
+}
+
+#movieInfo > p {
+  margin: 0;
 }
 
 #synopsisHeading {

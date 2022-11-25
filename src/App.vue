@@ -1,9 +1,9 @@
 <script setup>
-import MovieProfile from './components/MovieProfile.vue'
+import MoviePage from './components/MoviePage.vue';
 </script>
 
 <template>
-  <MovieProfile></MovieProfile>
+  <MoviePage></MoviePage>
 </template>
 
 <style scoped>
